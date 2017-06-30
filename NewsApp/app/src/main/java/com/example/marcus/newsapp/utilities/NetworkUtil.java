@@ -15,6 +15,12 @@ import java.util.Scanner;
 
 import android.util.Log;
 
+import com.example.marcus.newsapp.NewsItem;
+import java.util.ArrayList;
+import org.json.JSONObject;
+import org.json.JSONException;
+import org.json.JSONArray;
+
 public class NetworkUtil {
     public static final String TAG = "NetworkUtils";
 
@@ -61,5 +67,48 @@ public class NetworkUtil {
         } finally {
             urlConnection.disconnect();
         }
+    }
+
+    public static ArrayList<NewsItem> parseJSONFile(String json) throws Exception {
+        JSONObject jsonArticle = new JSONObject(json);
+        JSONArray articles = jsonArticle.getJSONArray("articles");
+
+        ArrayList<NewsItem> articleArray = new ArrayList<>();
+        try {
+            for (int i = 0; i < articles.length(); i++){
+                JSONObject unparsedArticle = articles.getJSONObject(i);
+
+                String author = unparsedArticle.getString("author");
+                String title = unparsedArticle.getString("title");
+                String description = unparsedArticle.getString("description");
+                String url = unparsedArticle.getString("url");
+                String urlToImage = unparsedArticle.getString("urlToImage");
+                String publishedAt = unparsedArticle.getString("publishedAt");
+
+                NewsItem parsedArticle = new NewsItem(author, title, description, url, urlToImage, publishedAt);
+
+                articleArray.add(parsedArticle);
+            }
+            return articleArray;
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+
+//        for (int i = 0; i < articles.length(); i++){
+//            JSONObject unparsedArticle = articles.getJSONObject(i);
+//
+//            String author = unparsedArticle.getString("author");
+//            String title = unparsedArticle.getString("title");
+//            String description = unparsedArticle.getString("description");
+//            String url = unparsedArticle.getString("url");
+//            String urlToImage = unparsedArticle.getString("urlToImage");
+//            String publishedAt = unparsedArticle.getString("publishedAt");
+//
+//            NewsItem parsedArticle = new NewsItem(author, title, description, url, urlToImage, publishedAt);
+//
+//            articleArray.add(parsedArticle);
+//        }
+//        return articleArray;
     }
 }
